@@ -1,26 +1,23 @@
 import random
 
-
 def lottoziehung():
-    zahlen = list(range(1, 46))
-    random.shuffle(zahlen)
-    return zahlen[:6]
+    zahlen = []
+    while len(zahlen) < 6:
+        zahl = random.randint(1, 45)
+        if zahl not in zahlen:
+            zahlen.append(zahl)
+    return sorted(zahlen)
 
-
-def statistik(anzahl_ziehungen=1000):
+def statistik():
     stats = {i: 0 for i in range(1, 46)}
-
-    for _ in range(anzahl_ziehungen):
+    for _ in range(1000):
         gezogene = lottoziehung()
-        for zahl in gezogene:
-            stats[zahl] += 1
-
+        for z in gezogene:
+            stats[z] += 1
     return stats
 
-
-print("Eine Ziehung:", lottoziehung())
-
-ergebnis = statistik(1000)
+print("Gezogene Lottozahlen:", lottoziehung())
 print("\nStatistik nach 1000 Ziehungen:")
-for zahl, haeufigkeit in sorted(ergebnis.items()):
-    print(f"{zahl:2d}: {haeufigkeit}")
+ergebnis = statistik()
+for zahl in sorted(ergebnis.keys()):
+    print(f"Zahl {zahl:2d}: {ergebnis[zahl]} mal")
