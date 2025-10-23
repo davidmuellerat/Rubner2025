@@ -10,7 +10,7 @@ def lottoziehung():
 
 def statistik():
     stats = {i: 0 for i in range(1, 46)}
-    for _ in range(1000):
+    for _ in range(1000000):
         gezogene = lottoziehung()
         for z in gezogene:
             stats[z] += 1
