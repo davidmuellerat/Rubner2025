@@ -4,39 +4,50 @@ cards = list(range(52))
 
 def checkHand(hand):
 
-    hand.sort()
-    colorcards = []
-    symbolcards = []
-    for x in range(5):
-        colorcards.append(hand[x] // 13)
-        symbolcards.append(hand[x] % 13)
-    handType = ""
-    if len(set(colorcards)) == 1 and (symbolcards[0]+1 == symbolcards[1] and symbolcards[1]+1 == symbolcards[2] and symbolcards[2]+1 == symbolcards[3] and symbolcards[3]+1 == symbolcards[4]):
-        handType = "Straight Flush"
-    elif len(set(symbolcards)) == 2 and (symbolcards.count(symbolcards[0]) == 4 or symbolcards.count(symbolcards[1] == 4)):
-        handType = "Four of a Kind"
-    elif len(set(symbolcards)) == 2:
-        handType = "Full House"
-    elif len(set(colorcards)) == 1:
-        handType = "Flush"
-    elif symbolcards[0]+1 == symbolcards[1] and symbolcards[1]+1 == symbolcards[2] and symbolcards[2]+1 == symbolcards[3] and symbolcards[3]+1 == symbolcards[4]:
-        handType = "Straight"
-    elif len(set(symbolcards)) == 3 and (symbolcards.count(symbolcards[0]) == 3 or symbolcards.count(symbolcards[1]) == 3 or symbolcards.count(symbolcards[2]) == 3):
-        handType = "Three of a Kind"
-    elif len(set(symbolcards)) == 3 and (symbolcards.count(symbolcards[0]) == 2 or symbolcards.count(symbolcards[1]) == 2 or symbolcards.count(symbolcards[2]) == 2):
-        handType = "Two Pair"
-    elif len(set(symbolcards)) == 4:
-        handType = "Pair"
-    else:
-        handType = "High Card"
-    return handType
+    suits = [c // 13 for c in hand]
+    values = sorted([c % 13 for c in hand])
+
+    is_wheel = values == [0, 1, 2, 3, 12]
+    is_straight = all(values[i] + 1 == values[i+1] for i in range(4)) or is_wheel
+
+    is_flush = len(set(suits)) == 1
+
+    counts = [values.count(v) for v in set(values)]
+    counts.sort(reverse=True)
+
+    if is_straight and is_flush:
+        return "Straight Flush"
+
+    if counts == [4,1]:
+        return "Four of a Kind"
+
+    if counts == [3,2]:
+        return "Full House"
+
+    if is_flush:
+        return "Flush"
+
+    if is_straight:
+        return "Straight"
+
+    if counts == [3,1,1]:
+        return "Three of a Kind"
+
+    if counts == [2,2,1]:
+        return "Two Pair"
+
+    if counts == [2,1,1,1]:
+        return "Pair"
+
+    return "High Card"
+
 
 
 x = 0
 listCounts = [0,0,0,0,0,0,0,0,0]
 
 while x < 1000000:
-    hand = [random.sample(cards,5)]
+    hand = random.sample(cards,5)
     if checkHand(hand) == "Straight Flush":
         listCounts[0]+=1
     elif checkHand(hand) == "Four of a Kind":
